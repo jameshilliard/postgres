@@ -556,6 +556,20 @@ typedef struct NullableDatum
 #define PointerGetDatum(X) ((Datum) (X))
 
 /*
+ * DatumGetAddress
+ *		Returns mach_vm_address_t value of a datum.
+ */
+
+#define DatumGetAddress(X) ((mach_vm_address_t *) DatumGetPointer(X))
+
+/*
+ * AddressGetDatum
+ *		Returns datum representation for a mach_vm_address_t.
+ */
+
+#define AddressGetDatum(X) ((Datum) (X))
+
+/*
  * DatumGetCString
  *		Returns C string (null-terminated string) value of a datum.
  *

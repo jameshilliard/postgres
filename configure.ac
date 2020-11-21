@@ -2144,12 +2144,15 @@ fi
 
 
 # Select shared-memory implementation type.
-if test "$PORTNAME" != "win32"; then
-  AC_DEFINE(USE_SYSV_SHARED_MEMORY, 1, [Define to select SysV-style shared memory.])
-  SHMEM_IMPLEMENTATION="src/backend/port/sysv_shmem.c"
-else
+if test "$PORTNAME" = "win32"; then
   AC_DEFINE(USE_WIN32_SHARED_MEMORY, 1, [Define to select Win32-style shared memory.])
   SHMEM_IMPLEMENTATION="src/backend/port/win32_shmem.c"
+elif test "$PORTNAME" = "darwin"; then
+  AC_DEFINE(USE_MACH_SHARED_MEMORY, 1, [Define to select Mach-style shared memory.])
+  SHMEM_IMPLEMENTATION="src/backend/port/mach_shmem.c"
+else
+  AC_DEFINE(USE_SYSV_SHARED_MEMORY, 1, [Define to select SysV-style shared memory.])
+  SHMEM_IMPLEMENTATION="src/backend/port/sysv_shmem.c"
 fi
 
 # Select random number source. If a TLS library is used then it will be the

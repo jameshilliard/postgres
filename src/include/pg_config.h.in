@@ -878,6 +878,9 @@
 /* Define to 1 to build with LLVM based JIT support. (--with-llvm) */
 #undef USE_LLVM
 
+/* Define to select Mach-style shared memory. */
+#undef USE_MACH_SHARED_MEMORY
+
 /* Define to select named POSIX semaphores. */
 #undef USE_NAMED_POSIX_SEMAPHORES
 
