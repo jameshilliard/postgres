@@ -494,6 +494,9 @@ if test "$GCC" = yes -a "$ICC" = no; then
   AC_SUBST(PERMIT_DECLARATION_AFTER_STATEMENT)
   # Really don't want VLAs to be used in our dialect of C
   PGAC_PROG_CC_CFLAGS_OPT([-Werror=vla])
+  # Prevent usage of symbols marked as newer than our target.
+  PGAC_PROG_CC_CFLAGS_OPT([-Werror=unguarded-availability-new])
+  PGAC_PROG_CXX_CFLAGS_OPT([-Werror=unguarded-availability-new])
   # -Wvla is not applicable for C++
   PGAC_PROG_CC_CFLAGS_OPT([-Wendif-labels])
   PGAC_PROG_CXX_CFLAGS_OPT([-Wendif-labels])
@@ -1726,6 +1729,23 @@ if test "$pgac_cv_var_PS_STRINGS" = yes ; then
   AC_DEFINE([HAVE_PS_STRINGS], 1, [Define to 1 if the PS_STRINGS thing exists.])
 fi
 
+AC_MSG_CHECKING([for pwritev])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+[#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_UIO_H
+#include <sys/uio.h>
+#endif],
+[struct iovec *iov;
+off_t offset;
+offset = 0;
+pwritev(0, iov, 0, offset);
+])], [AC_MSG_RESULT(yes)
+AC_DEFINE([HAVE_PWRITEV], 1, [Define to 1 if you have the `pwritev' function.])],
+[AC_MSG_RESULT(no)
+AC_LIBOBJ(pwritev)])
+
 AC_REPLACE_FUNCS(m4_normalize([
 	dlopen
 	explicit_bzero
@@ -1739,7 +1759,6 @@ AC_REPLACE_FUNCS(m4_normalize([
 	pread
 	preadv
 	pwrite
-	pwritev
 	random
 	srandom
 	strlcat
